@@ -53,8 +53,7 @@ const GROK_LAUNCH_SPEC: AcpLaunchSpec = {
     ...pluginDirs.flatMap((dir) => ['--plugin-dir', dir]),
     'stdio'
   ],
-  // Claude MCP import can prevent Grok from finishing an ACP turn on Windows (#46191).
-  env: process.platform === 'win32' ? { GROK_CLAUDE_MCPS_ENABLED: 'false' } : {},
+  env: {},
   dialect: GROK_ACP_DIALECT,
   historyCatchUp: 'prompt-id',
   loginCommand: agentSessionSetupFor('grok')?.loginCommand ?? [],
