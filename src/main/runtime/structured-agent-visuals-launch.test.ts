@@ -15,7 +15,10 @@ const VISUALS: NativeChatVisualsLaunch = {
   folder: '/state/chat-scratch/abc',
   skill: { pluginDir: '/app/native-chat-visuals', skillsRoot: '/app/native-chat-visuals/skills' }
 }
-const SKILL_FILE = '/app/native-chat-visuals/skills/orca-chat-visuals/SKILL.md'
+const SKILL_FILE =
+  process.platform === 'win32'
+    ? String.raw`\app\native-chat-visuals\skills\orca-chat-visuals\SKILL.md`
+    : '/app/native-chat-visuals/skills/orca-chat-visuals/SKILL.md'
 
 let dataDirectory = ''
 beforeAll(async () => {
@@ -106,7 +109,9 @@ describe('inline visuals in every native chat agent', () => {
       { variable: 'GEMINI_HOME', path: '/home/user/orca-data/antigravity-chat' },
       '1.18.35'
     )
-    expect(JSON.stringify(launch.sessionMeta)).toContain(SKILL_FILE)
+    expect(launch.sessionMeta).toMatchObject({
+      antigravity: { systemPrompt: { append: expect.stringContaining(SKILL_FILE) } }
+    })
     expect(launch.sessionMetaOptional).toBe(true)
     expect(launch.env.ORCA_CHAT_SCRATCH_DIR).toBe('/state/chat-scratch/abc')
   })
